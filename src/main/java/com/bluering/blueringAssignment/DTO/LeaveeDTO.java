@@ -1,9 +1,9 @@
 package com.bluering.blueringAssignment.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 public class LeaveeDTO {
@@ -12,5 +12,6 @@ public class LeaveeDTO {
     private LocalDate toDate;
     private Integer numberOfDays;
     private String note;
-    private Integer leaveTypeId;
+    private Integer leaveType;
+    private Integer employeeId;
 }

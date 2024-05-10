@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -14,15 +16,15 @@ import java.sql.Date;
 public class ExpenseclaimentryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id@Column(name = "id")
-    private Integer id;
+    private int id;
     @Basic@Column(name = "date")
-    private Date date;
+    private LocalDate date;
     @Basic@Column(name = "description")
     private String description;
     @Basic@Column(name = "total")
-    private BigDecimal total;
+    private double total;
     @Basic@Column(name="expense_type_id")
-    private Integer expenseTypeId;
+    private Integer expenseType;
     @Basic@Column(name="expense_claim_id")
-    private Integer expenseClaimId;
+    private Integer expenseClaim;
 }

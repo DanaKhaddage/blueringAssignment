@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Setter
 @Getter
 @Entity
@@ -11,7 +13,7 @@ import lombok.Setter;
 public class EmployeeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id@Column(name = "id")
-    private Integer id;
+    private int id;
     @Basic@Column(name = "name")
     private String name;
     @Basic@Column(name = "email")

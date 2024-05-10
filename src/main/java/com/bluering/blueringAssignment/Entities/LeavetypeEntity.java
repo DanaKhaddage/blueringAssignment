@@ -11,7 +11,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "leavetype", schema = "assignment", catalog = "")
 public class LeavetypeEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id@Column(name = "id")
     private Integer id;
     @Basic@Column(name = "name")

@@ -1,12 +1,11 @@
 package com.bluering.blueringAssignment.Entities;
 
 import jakarta.persistence.*;
-import jdk.vm.ci.meta.Local;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -16,14 +15,16 @@ public class LeaveeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id@Column(name = "id")
     private Integer id;
-    @Basic@Column(name = "from_date")
+    @Basic@Column(name = "fromDate")
     private LocalDate fromDate;
-    @Basic@Column(name = "to_date")
+    @Basic@Column(name = "toDate")
     private LocalDate toDate;
-    @Basic@Column(name = "number_of_days")
-    private int numberOfDays;
+    @Basic@Column(name = "numberOfDays")
+    private Integer numberOfDays;
     @Basic@Column(name = "note")
     private String note;
-    @Basic@Column(name="leave_type")
-    private Integer leaveTypeId;
+    @Basic@Column(name="employeeId")
+    private Integer employeeId;
+    @Basic@Column(name="leaveType")
+    private Integer leaveType;
 }
