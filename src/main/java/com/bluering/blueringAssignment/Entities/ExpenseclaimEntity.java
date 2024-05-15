@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Setter
@@ -17,7 +18,7 @@ public class ExpenseclaimEntity {
     @Id@Column(name = "id")
     private int id;
     @Basic@Column(name = "date")
-    private Date date;
+    private LocalDate date;
     @Basic@Column(name = "description")
     private String description;
     @Basic@Column(name = "total")

@@ -12,7 +12,7 @@ public interface LeaveService {
     void createLeave(Map<String,Object> leaveDTO);
     void updateLeave(Integer id, Map<String,Object>leaveDTO);
     List<LeaveeDTO> getLeavesByEmployeeAndDateRange(Integer employeeId, LocalDate from, LocalDate to);
-    Page<LeaveeDTO> getLeavesByTypeAndEmployee(Integer employeeId, String type, Pageable pageable);
+    Page<LeaveeDTO> getLeavesByTypeAndEmployee(Integer employeeId, Integer type, Pageable pageable);
     List<LeaveeDTO> getLeaves();
     void deleteLeave(Integer id);
 }

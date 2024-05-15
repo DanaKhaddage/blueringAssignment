@@ -1,6 +1,7 @@
 package com.bluering.blueringAssignment.Controllers;
 
 import com.bluering.blueringAssignment.ApiResponse;
+import com.bluering.blueringAssignment.DTO.LeaveRequestDTO;
 import com.bluering.blueringAssignment.DTO.LeaveeDTO;
 import com.bluering.blueringAssignment.Services.LeaveService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -49,21 +50,33 @@ public class LeaveController {
     @GetMapping("/employee/{employeeId}")
     public ResponseEntity<List<LeaveeDTO>> getLeavesByEmployeeAndDateRange(
             @PathVariable Integer employeeId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        List<LeaveeDTO> leaves = leaveService.getLeavesByEmployeeAndDateRange(employeeId, from, to);
+            @RequestBody LeaveeDTO requestDTO) {
+        List<LeaveeDTO> leaves = leaveService.getLeavesByEmployeeAndDateRange(employeeId, requestDTO.getFromDate(), requestDTO.getToDate());
         return ResponseEntity.ok(leaves);
     }
+//    public ResponseEntity<List<LeaveeDTO>> getLeavesByEmployeeAndDateRange(
+//            @PathVariable Integer employeeId,
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+//        List<LeaveeDTO> leaves = leaveService.getLeavesByEmployeeAndDateRange(employeeId, from, to);
+//        return ResponseEntity.ok(leaves);
+//    }
 
     @GetMapping("/employee/{employeeId}/leaves")
     public ResponseEntity<Page<LeaveeDTO>> getLeavesByTypeAndEmployee(
             @PathVariable Integer employeeId,
-            @RequestParam("type") String type,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Page<LeaveeDTO> leavesPage = leaveService.getLeavesByTypeAndEmployee(employeeId, type, PageRequest.of(page, size));
+            @RequestBody LeaveRequestDTO requestDTO) {
+        Page<LeaveeDTO> leavesPage = leaveService.getLeavesByTypeAndEmployee(employeeId, requestDTO.getLeaveType(), PageRequest.of(requestDTO.getPage(), requestDTO.getSize()));
         return ResponseEntity.ok(leavesPage);
     }
+//    public ResponseEntity<Page<LeaveeDTO>> getLeavesByTypeAndEmployee(
+//            @PathVariable Integer employeeId,
+//            @RequestParam("type") int type,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size) {
+//        Page<LeaveeDTO> leavesPage = leaveService.getLeavesByTypeAndEmployee(employeeId, type, PageRequest.of(page, size));
+//        return ResponseEntity.ok(leavesPage);
+//    }
 
     @PatchMapping("/{id}")
     public ApiResponse updateLeave(@PathVariable Integer id, @RequestBody Map<String, Object> updateFields) {

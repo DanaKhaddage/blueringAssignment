@@ -35,11 +35,14 @@ public class ExpenseClaimServiceImpl implements ExpenseClaimService{
         return totalAmount;
     }
 
-    public void createExpenseClaim(ExpenseclaimDTO expenseClaimDTO){
-        ExpenseclaimEntity expenseClaimEntity =expenseClaimMapper.ExpenseClaimDTOToExpenseClaimEntity(expenseClaimDTO);
-        double totalAmount=calculateTotal(expenseClaimDTO.getExpenseClaimEntry());
+    public void createExpenseClaim(ExpenseclaimDTO expenseClaimDTO) {
+        ExpenseclaimEntity expenseClaimEntity = expenseClaimMapper.ExpenseClaimDTOToExpenseClaimEntity(expenseClaimDTO);
+        double totalAmount = calculateTotal(expenseClaimDTO.getExpenseClaimEntry());
         expenseClaimEntity.setTotal(totalAmount);
     }
+//        ExpenseclaimEntity expenseclaimEntity=new ExpenseclaimEntity();
+//        generalService.updateEntity(expenseClaimDTO,expenseclaimEntity,ExpenseclaimEntity.class);
+//        expenseClaimRepository.saveAndFlush(expenseclaimEntity);
 
     public void deleteExpenseClaim(Integer id){
         expenseClaimRepository.deleteById(id);

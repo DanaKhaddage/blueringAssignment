@@ -47,10 +47,18 @@ public class ExpenseClaimEntryController {
         return ece;
     }
 
-    @GetMapping("/get/{id}")
-    public List<?>getExpenseClaimsPerEmployeePerType(@PathVariable Integer id){
-        return expenseClaimEntryService.getExpenseClaimsPerEmployeePerType(id);
+    @GetMapping("/employee/{id}/expenseClaims")
+    public ResponseEntity<List<EmployeeDTO>> getExpenseClaimsPerEmployeePerType(@PathVariable Integer id) {
+        List<EmployeeDTO> expenseClaims = expenseClaimEntryService.getExpenseClaimsPerEmployeePerType(id);
+        if (expenseClaims.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(expenseClaims);
     }
+//    @GetMapping("/get/{id}")
+//    public List<?>getExpenseClaimsPerEmployeePerType(@PathVariable Integer id){
+//        return expenseClaimEntryService.getExpenseClaimsPerEmployeePerType(id);
+//    }
 
     @PatchMapping("/{id}")
     public ApiResponse updateExpenseClaimEntry(@PathVariable Integer id, @RequestBody Map<String, Object> updateFields) {

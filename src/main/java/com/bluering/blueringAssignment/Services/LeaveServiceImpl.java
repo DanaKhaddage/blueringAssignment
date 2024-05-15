@@ -58,7 +58,7 @@ public class LeaveServiceImpl implements LeaveService{
                 .collect(Collectors.toList());
     }
 
-    public Page<LeaveeDTO> getLeavesByTypeAndEmployee(Integer employeeId, String type, Pageable pageable) {
+    public Page<LeaveeDTO> getLeavesByTypeAndEmployee(Integer employeeId, Integer type, Pageable pageable) {
         return leaveRepository.findByEmployeeIdAndLeaveType(employeeId, type, pageable)
                 .map(leaveMapper::LeaveEntityToLeaveDTO);
     }
