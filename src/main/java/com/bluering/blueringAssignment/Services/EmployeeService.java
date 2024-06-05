@@ -9,5 +9,7 @@ public interface EmployeeService{
     void createEmployee(Map<String, Object> employeeDTO);
     void updateEmployee(Integer id, Map<String, Object> employeeDTO);
     List<EmployeeDTO> getEmployeesByDepartment(Integer departmentId);
+    List<EmployeeDTO> getEmployees();
     void deleteEmployee(Integer id);
+    EmployeeDTO getEmployeeById(Integer id);
 }

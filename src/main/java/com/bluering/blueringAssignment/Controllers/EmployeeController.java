@@ -19,8 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/employee")
+@RequestMapping("/api")
 public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeMapper employeeMapper;
@@ -33,7 +34,16 @@ public class EmployeeController {
         this.employeeRepository=employeeRepository;
     }
 
-    @PostMapping("/")
+    @GetMapping("/employees")
+    public List<EmployeeDTO> getEmployees() {
+        List<EmployeeDTO> employees = employeeService.getEmployees();
+        if (employees.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No employees found");
+        }
+        return employees;
+    }
+
+    @PostMapping("/employees")
     public ResponseEntity<ApiResponse> createEmployee(@RequestBody Map<String,Object> employeeDTO) {
         try {
             employeeService.createEmployee(employeeDTO);
@@ -43,6 +53,17 @@ public class EmployeeController {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "Error creating employee", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/employees/{id}")
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Integer id) {
+        try {
+            EmployeeDTO employee = employeeService.getEmployeeById(id);
+            return ResponseEntity.ok(employee);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
         }
     }
 
@@ -64,7 +85,7 @@ public class EmployeeController {
     }
 
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/employees/{id}")
     public ApiResponse updateEmployee(@PathVariable Integer id, @RequestBody Map<String, Object> updateFields) {
         try {
             employeeService.updateEmployee(id, updateFields);

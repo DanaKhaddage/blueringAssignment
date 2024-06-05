@@ -1,5 +1,6 @@
 package com.bluering.blueringAssignment.Services;
 
+import com.bluering.blueringAssignment.DTO.DepartmentDTO;
 import com.bluering.blueringAssignment.DTO.EmployeeDTO;
 import com.bluering.blueringAssignment.Entities.DepartmentEntity;
 import com.bluering.blueringAssignment.Entities.EmployeeEntity;
@@ -32,6 +33,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.saveAndFlush(employee);
     }
 
+    public List<EmployeeDTO> getEmployees(){
+        return employeeRepository.findAll()
+                .stream()
+                .map(employeeMapper::EmployeeEntityToEmployeeDTO)
+                .collect(Collectors.toList());
+    }
 
     public void updateEmployee(Integer id, Map<String,Object>employeeDTO){
         EmployeeEntity employee=employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with number: " + id));
@@ -53,5 +60,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public void deleteEmployee(Integer id){
         employeeRepository.deleteById(id);
+    }
+
+    public EmployeeDTO getEmployeeById(Integer id) {
+        EmployeeEntity employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+        return employeeMapper.EmployeeEntityToEmployeeDTO(employee);
     }
 }
