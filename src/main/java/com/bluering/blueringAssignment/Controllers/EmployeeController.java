@@ -46,6 +46,15 @@ public class EmployeeController {
     @PostMapping("/employees")
     public ResponseEntity<ApiResponse> createEmployee(@RequestBody Map<String,Object> employeeDTO) {
         try {
+            // Ensure that departmentId is an Integer
+            if (employeeDTO.containsKey("departmentId") && employeeDTO.get("departmentId") instanceof String) {
+                try {
+                    employeeDTO.put("departmentId", Integer.parseInt((String) employeeDTO.get("departmentId")));
+                } catch (NumberFormatException e) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(new ApiResponse(false, "Invalid departmentId format", e.getMessage()));
+                }
+            }
             employeeService.createEmployee(employeeDTO);
             return ResponseEntity
                     .ok(new ApiResponse(true, "Employee created successfully"));
@@ -85,17 +94,8 @@ public class EmployeeController {
     }
 
 
-    @PatchMapping("/employees/{id}")
-    public ApiResponse updateEmployee(@PathVariable Integer id, @RequestBody Map<String, Object> updateFields) {
-        try {
-            employeeService.updateEmployee(id, updateFields);
-            return new ApiResponse(true, "Employee updated successfully", id);
-        } catch (ResourceNotFoundException e) {
-            return new ApiResponse(false, "Employee not found with id: " + id, null);
-        }
-    }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("employees/{id}")
     public ResponseEntity<ApiResponse> deleteEmployee(@PathVariable Integer id) {
         try {
             employeeService.deleteEmployee(id);
@@ -105,6 +105,30 @@ public class EmployeeController {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "Error deleting employee", e.getMessage()));
+        }
+    }
+
+    @PatchMapping("/employees/{id}")
+    public ResponseEntity<ApiResponse> updateEmployee(@PathVariable Integer id, @RequestBody Map<String, Object> updateFields) {
+        try {
+            // Ensure that departmentId is an Integer
+            if (updateFields.containsKey("departmentId") && updateFields.get("departmentId") instanceof String) {
+                try {
+                    updateFields.put("departmentId", Integer.parseInt((String) updateFields.get("departmentId")));
+                } catch (NumberFormatException e) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(new ApiResponse(false, "Invalid departmentId format", e.getMessage()));
+                }
+            }
+
+            employeeService.updateEmployee(id, updateFields);
+            return ResponseEntity.ok(new ApiResponse(true, "Employee updated successfully", id));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, "Employee not found with id: " + id, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "Error updating employee", e.getMessage()));
         }
     }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/leave")
 public class LeaveController {
     private final LeaveService leaveService;
@@ -69,6 +70,7 @@ public class LeaveController {
         Page<LeaveeDTO> leavesPage = leaveService.getLeavesByTypeAndEmployee(employeeId, requestDTO.getLeaveType(), PageRequest.of(requestDTO.getPage(), requestDTO.getSize()));
         return ResponseEntity.ok(leavesPage);
     }
+
 //    public ResponseEntity<Page<LeaveeDTO>> getLeavesByTypeAndEmployee(
 //            @PathVariable Integer employeeId,
 //            @RequestParam("type") int type,

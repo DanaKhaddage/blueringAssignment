@@ -14,4 +14,5 @@ public class LeaveeDTO {
     private String note;
     private Integer leaveType;
     private Integer employeeId;
+    private String employeeName;
 }
