@@ -15,16 +15,23 @@ public class LeaveeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id@Column(name = "id")
     private Integer id;
-    @Basic@Column(name = "fromDate")
+    @Basic@Column(name = "from_Date")
     private LocalDate fromDate;
-    @Basic@Column(name = "toDate")
+    @Basic@Column(name = "to_Date")
     private LocalDate toDate;
-    @Basic@Column(name = "numberOfDays")
+    @Basic@Column(name = "number_of_days")
     private Integer numberOfDays;
     @Basic@Column(name = "note")
     private String note;
-    @Basic@Column(name="employeeId")
+    @Basic@Column(name="employee_id")
     private Integer employeeId;
-    @Basic@Column(name="leaveType")
+    @Basic@Column(name="leave_type")
     private Integer leaveType;
+
+    // Additional fields for leave type name and employee name
+    @Transient // Marked as transient to indicate it's not a persistent field
+    private String leaveTypeName;
+
+    @Transient // Marked as transient to indicate it's not a persistent field
+    private String employeeName;
 }

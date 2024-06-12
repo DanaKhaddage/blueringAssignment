@@ -13,6 +13,7 @@ public class LeaveeDTO {
     private Integer numberOfDays;
     private String note;
     private Integer leaveType;
+    private String leaveTypeName;
     private Integer employeeId;
     private String employeeName;
 }
