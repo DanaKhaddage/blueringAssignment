@@ -3,6 +3,12 @@ package com.bluering.blueringAssignment.Controllers;
 import com.bluering.blueringAssignment.ApiResponse;
 import com.bluering.blueringAssignment.DTO.LeaveRequestDTO;
 import com.bluering.blueringAssignment.DTO.LeaveeDTO;
+import com.bluering.blueringAssignment.DTO.PaginationRequest;
+import com.bluering.blueringAssignment.Entities.EmployeeEntity;
+import com.bluering.blueringAssignment.Entities.LeavetypeEntity;
+import com.bluering.blueringAssignment.Repositories.EmployeeRepository;
+import com.bluering.blueringAssignment.Repositories.LeaveRepository;
+import com.bluering.blueringAssignment.Repositories.LeaveTypeRepository;
 import com.bluering.blueringAssignment.Services.LeaveService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -21,9 +27,13 @@ import java.util.Map;
 @RequestMapping("/api/leave")
 public class LeaveController {
     private final LeaveService leaveService;
+    private final EmployeeRepository employeeRepository;
+    private final LeaveTypeRepository leaveTypeRepository;
 
-    public LeaveController(LeaveService leaveService) {
+    public LeaveController(LeaveService leaveService,EmployeeRepository employeeRepository,LeaveTypeRepository leaveTypeRepository) {
         this.leaveService = leaveService;
+        this.employeeRepository=employeeRepository;
+        this.leaveTypeRepository=leaveTypeRepository;
     }
 
     @PostMapping("/")
@@ -63,13 +73,12 @@ public class LeaveController {
 //        return ResponseEntity.ok(leaves);
 //    }
 
-    @GetMapping("/employee/{employeeId}/leaves")
-    public ResponseEntity<Page<LeaveeDTO>> getLeavesByTypeAndEmployee(
-            @PathVariable Integer employeeId,
-            @RequestBody LeaveRequestDTO requestDTO) {
-        Page<LeaveeDTO> leavesPage = leaveService.getLeavesByTypeAndEmployee(employeeId, requestDTO.getLeaveType(), PageRequest.of(requestDTO.getPage(), requestDTO.getSize()));
-        return ResponseEntity.ok(leavesPage);
-    }
+//    @PostMapping("/paginatedLeaves")
+//    public ResponseEntity<Page<LeaveeDTO>> getLeavesByTypeAndEmployee(
+//            @RequestBody LeaveRequestDTO requestDTO) {
+//        Page<LeaveeDTO> leavesPage = leaveService.getLeavesByTypeAndEmployee(employeeId, requestDTO.getLeaveType(), PageRequest.of(requestDTO.getPage(), requestDTO.getSize()));
+//        return ResponseEntity.ok(leavesPage);
+//    }
 
 //    public ResponseEntity<Page<LeaveeDTO>> getLeavesByTypeAndEmployee(
 //            @PathVariable Integer employeeId,
@@ -102,4 +111,55 @@ public class LeaveController {
                     .body(new ApiResponse(false, "Error deleting leave", e.getMessage()));
         }
     }
+
+    @PostMapping("/paginatedLeaves")
+    public ApiResponse getLeaves(@RequestBody LeaveRequestDTO leaveRequest) {
+        PaginationRequest response = leaveService.getLeavesByTypeAndEmployee(
+                leaveRequest.getLeaveType(),
+                leaveRequest.getEmployeeId(),
+                leaveRequest.getPage(),
+                leaveRequest.getSize()
+        );
+
+        return new ApiResponse(
+                true,
+                "Leaves fetched successfully",
+                response
+        );
+    }
+//    @PostMapping("/paginatedLeaves")
+//    public ApiResponse getLeaves(@RequestBody LeaveRequestDTO leaveRequest) {
+//        PaginationRequest response = leaveService.getLeavesByTypeAndEmployee(
+//                leaveRequest.getLeaveType(),
+//                leaveRequest.getEmployeeId(),
+//                leaveRequest.getPage(),
+//                leaveRequest.getSize()
+//        );
+//
+//        // Fetch employee name and leave type name for each leave
+//        List<LeaveeDTO> leaveDTOs = response.getItems();
+//        for (LeaveeDTO leaveDTO : leaveDTOs) {
+//            // Fetch and set employee name
+//            if (leaveDTO.getEmployeeId() != null) {
+//                String employeeName = employeeRepository.findById(leaveDTO.getEmployeeId())
+//                        .map(EmployeeEntity::getName)
+//                        .orElse("");
+//                leaveDTO.setEmployeeName(employeeName);
+//            }
+//
+//            // Fetch and set leave type name
+//            if (leaveDTO.getLeaveType() != null) {
+//                String leaveTypeName = leaveTypeRepository.findById(leaveDTO.getLeaveType())
+//                        .map(LeavetypeEntity::getName)
+//                        .orElse("");
+//                leaveDTO.setLeaveTypeName(leaveTypeName);
+//            }
+//        }
+//
+//        return new ApiResponse(
+//                true,
+//                "Leaves fetched successfully",
+//                response
+//        );
+//    }
 }

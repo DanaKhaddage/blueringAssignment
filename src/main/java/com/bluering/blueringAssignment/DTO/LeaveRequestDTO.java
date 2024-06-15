@@ -10,6 +10,6 @@ import lombok.Setter;
 public class LeaveRequestDTO {
     private Integer employeeId;
     private Integer leaveType;
-    private Integer page;
-    private Integer size;
+    private int page;
+    private int size;
 }

@@ -2,6 +2,7 @@ package com.bluering.blueringAssignment.Services;
 
 
 import com.bluering.blueringAssignment.DTO.LeaveeDTO;
+import com.bluering.blueringAssignment.DTO.PaginationRequest;
 import com.bluering.blueringAssignment.Entities.EmployeeEntity;
 import com.bluering.blueringAssignment.Entities.LeaveeEntity;
 import com.bluering.blueringAssignment.Entities.LeavetypeEntity;
@@ -11,6 +12,7 @@ import com.bluering.blueringAssignment.Repositories.LeaveRepository;
 import com.bluering.blueringAssignment.Repositories.LeaveTypeRepository;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -106,10 +108,58 @@ public class LeaveServiceImpl implements LeaveService{
                 .collect(Collectors.toList());
     }
 
-    public Page<LeaveeDTO> getLeavesByTypeAndEmployee(Integer employeeId, Integer type, Pageable pageable) {
-        return leaveRepository.findByEmployeeIdAndLeaveType(employeeId, type, pageable)
-                .map(leaveMapper::LeaveEntityToLeaveDTO);
+//    public Page<LeaveeDTO> getLeavesByTypeAndEmployee(Integer employeeId, Integer type, Pageable pageable) {
+//        return leaveRepository.findByEmployeeIdAndLeaveType(employeeId, type, pageable)
+//                .map(leaveMapper::LeaveEntityToLeaveDTO);
+//    }
+
+
+    public PaginationRequest getLeavesByTypeAndEmployee(Integer leaveType, Integer employeeId, int page, int size) {
+        Page<LeaveeEntity> leavePage;
+
+        if (leaveType != null && employeeId != null) {
+            leavePage = leaveRepository.findByLeaveTypeAndEmployeeId(leaveType, employeeId, PageRequest.of(page, size));
+        } else if (leaveType != null) {
+            leavePage = leaveRepository.findByLeaveType(leaveType, PageRequest.of(page, size));
+        } else if (employeeId != null) {
+            leavePage = leaveRepository.findByEmployeeId(employeeId, PageRequest.of(page, size));
+        } else {
+            leavePage = leaveRepository.findAll(PageRequest.of(page, size));
+        }
+
+        List<LeaveeDTO> leaveeDTOs = leavePage.getContent().stream()
+                .map(leave -> new LeaveeDTO(/* map fields from LeaveeEntity to LeaveeDTO */))
+                .collect(Collectors.toList());
+
+        return new PaginationRequest(leaveeDTOs, leavePage.getTotalElements(), leavePage.getNumber(), leavePage.getSize());
     }
+//    public PaginationRequest getLeavesByTypeAndEmployee(Integer leaveTypeId, Integer employeeId, int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<LeaveeEntity> leavePage;
+//
+//        if (leaveTypeId == null && employeeId == null) {
+//            // Fetch all leaves if no filters are applied
+//            leavePage = leaveRepository.findAll(pageable);
+//        } else if (leaveTypeId != null && employeeId == null) {
+//            // Fetch leaves by leave type
+//            leavePage = leaveRepository.findByLeaveType(leaveTypeId, pageable);
+//        } else if (leaveTypeId == null && employeeId != null) {
+//            // Fetch leaves by employee
+//            leavePage = leaveRepository.findByEmployeeId(employeeId, pageable);
+//        } else {
+//            // Fetch leaves by both leave type and employee
+//            leavePage = leaveRepository.findByLeaveTypeAndEmployeeId(leaveTypeId, employeeId, pageable);
+//        }
+//
+//        PaginationRequest response = new PaginationRequest();
+//        List<LeaveeDTO> leaveDTOs = leavePage.getContent().stream()
+//                .map(leaveMapper::LeaveEntityToLeaveDTO)
+//                .collect(Collectors.toList());
+//        response.setItems(leaveDTOs);
+//        response.setTotalItems(leavePage.getTotalElements());
+//
+//        return response;
+//    }
 
     public void deleteLeave(Integer id){
         leaveRepository.deleteById(id);

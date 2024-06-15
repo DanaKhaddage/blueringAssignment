@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/expenseclaim")
 public class ExpenseClaimController {
     private final ExpenseClaimService expenseClaimService;
