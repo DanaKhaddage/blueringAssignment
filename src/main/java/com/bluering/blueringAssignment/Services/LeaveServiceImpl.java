@@ -128,10 +128,35 @@ public class LeaveServiceImpl implements LeaveService{
         }
 
         List<LeaveeDTO> leaveeDTOs = leavePage.getContent().stream()
-                .map(leave -> new LeaveeDTO(/* map fields from LeaveeEntity to LeaveeDTO */))
+                .map(leave -> {
+                    LeaveeDTO leaveeDTO = new LeaveeDTO();
+                    leaveeDTO.setId(leave.getId());
+                    leaveeDTO.setFromDate(leave.getFromDate());
+                    leaveeDTO.setToDate(leave.getToDate());
+                    leaveeDTO.setNumberOfDays(leave.getNumberOfDays());
+                    leaveeDTO.setNote(leave.getNote());
+
+                    // Fetch and set leave type name
+                    if (leave.getLeaveType() != null) {
+                        leaveeDTO.setLeaveType(leave.getLeaveType());
+                        leaveeDTO.setLeaveTypeName(leaveTypeRepository.findById(leave.getLeaveType())
+                                .map(LeavetypeEntity::getName)
+                                .orElse(""));
+                    }
+
+                    // Fetch and set employee name
+                    if (leave.getEmployeeId() != null) {
+                        leaveeDTO.setEmployeeId(leave.getEmployeeId());
+                        leaveeDTO.setEmployeeName(employeeRepository.findById(leave.getEmployeeId())
+                                .map(EmployeeEntity::getName)
+                                .orElse(""));
+                    }
+
+                    return leaveeDTO;
+                })
                 .collect(Collectors.toList());
 
-        return new PaginationRequest(leaveeDTOs, leavePage.getTotalElements(), leavePage.getNumber(), leavePage.getSize());
+        return new PaginationRequest(leaveeDTOs, leavePage.getTotalElements(), page, size);
     }
 //    public PaginationRequest getLeavesByTypeAndEmployee(Integer leaveTypeId, Integer employeeId, int page, int size) {
 //        Pageable pageable = PageRequest.of(page, size);
