@@ -42,21 +42,14 @@ public class LeaveServiceImpl implements LeaveService{
         // Fetch leave type name
         Integer leaveTypeId = (Integer) leaveDTO.get("leaveType");
         String leaveTypeName = ""; // Fetch leave type name from repository based on leaveTypeId
-        // Example: (assuming you have a repository method to fetch leave type name)
-        // String leaveTypeName = leaveTypeRepository.findById(leaveTypeId).get().getName();
         leave.setLeaveTypeName(leaveTypeName);
 
         // Fetch employee name
         Integer employeeId = (Integer) leaveDTO.get("employeeId");
         String employeeName = ""; // Fetch employee name from repository based on employeeId
-        // Example: (assuming you have a repository method to fetch employee name)
-        // String employeeName = employeeRepository.findById(employeeId).get().getName();
         leave.setEmployeeName(employeeName);
 
         leaveRepository.saveAndFlush(leave);
-//        LeaveeEntity leave=new LeaveeEntity();
-//        generalService.updateEntity(leaveDTO,leave,LeaveeEntity.class);
-//        leaveRepository.saveAndFlush(leave);
     }
 
     public void updateLeave(Integer id, Map<String,Object>leaveDTO){
@@ -91,10 +84,6 @@ public class LeaveServiceImpl implements LeaveService{
                     return leaveDTO;
                 })
                 .collect(Collectors.toList());
-//        return leaveRepository.findAll()
-//                .stream()
-//                .map(leaveMapper::LeaveEntityToLeaveDTO)
-//                .collect(Collectors.toList());
     }
 
     public List<LeaveeDTO> getLeavesByEmployeeAndDateRange(Integer employeeId, LocalDate from, LocalDate to) {

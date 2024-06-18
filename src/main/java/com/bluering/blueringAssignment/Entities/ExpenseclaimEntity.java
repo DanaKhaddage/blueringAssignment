@@ -22,7 +22,7 @@ public class ExpenseclaimEntity {
     @Basic@Column(name = "description")
     private String description;
     @Basic@Column(name = "total")
-    private double total;
+    private Double total;
     @Basic@Column(name = "status")
     private String status;
     @Basic@Column(name="employee_id")

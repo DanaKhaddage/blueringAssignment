@@ -2,6 +2,7 @@ package com.bluering.blueringAssignment.Controllers;
 
 import com.bluering.blueringAssignment.ApiResponse;
 import com.bluering.blueringAssignment.DTO.ExpenseclaimDTO;
+import com.bluering.blueringAssignment.DTO.ExpenseclaimentryDTO;
 import com.bluering.blueringAssignment.Services.ExpenseClaimService;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,17 @@ public class ExpenseClaimController {
         }
         return expenseClaims;
     }
+
+    @GetMapping("/entries/{expenseClaim}")
+    public ApiResponse getEntriesByExpenseClaim(@PathVariable Integer expenseClaim ) {
+        List<ExpenseclaimentryDTO> expenseDTOs = expenseClaimService.getEntriesByExpenseClaimId(expenseClaim);
+        if (!expenseDTOs.isEmpty()) {
+            return new ApiResponse(true, "Entries retrieved successfully.", expenseDTOs);
+        } else {
+            return new ApiResponse(false, "No entries found.", null);
+        }
+    }
+
 
     @PatchMapping("/{id}")
     public ApiResponse updateExpenseClaim(@PathVariable Integer id, @RequestBody Map<String, Object> updateFields) {

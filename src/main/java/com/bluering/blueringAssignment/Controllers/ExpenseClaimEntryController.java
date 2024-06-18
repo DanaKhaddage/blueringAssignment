@@ -3,7 +3,6 @@ package com.bluering.blueringAssignment.Controllers;
 import com.bluering.blueringAssignment.ApiResponse;
 import com.bluering.blueringAssignment.DTO.EmployeeDTO;
 import com.bluering.blueringAssignment.DTO.ExpenseclaimentryDTO;
-import com.bluering.blueringAssignment.Services.EmployeeService;
 import com.bluering.blueringAssignment.Services.ExpenseClaimEntryService;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -15,18 +14,17 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/ECE")
 public class ExpenseClaimEntryController {
-    private final EmployeeService employeeService;
     private final ExpenseClaimEntryService expenseClaimEntryService;
 
-    public ExpenseClaimEntryController(EmployeeService employeeService,ExpenseClaimEntryService expenseClaimEntryService) {
-        this.employeeService=employeeService;
+    public ExpenseClaimEntryController(ExpenseClaimEntryService expenseClaimEntryService) {
         this.expenseClaimEntryService = expenseClaimEntryService;
     }
 
     @PostMapping("/")
-    public ResponseEntity<ApiResponse> createExpenseClaimEntry(@RequestBody Map<String,Object> expenseClaimEntryDTO) {
+    public ResponseEntity<ApiResponse> createExpenseClaimEntry(@RequestBody Map<String, Object> expenseClaimEntryDTO) {
         try {
             expenseClaimEntryService.createExpenseClaimEntry(expenseClaimEntryDTO);
             return ResponseEntity
@@ -55,10 +53,6 @@ public class ExpenseClaimEntryController {
         }
         return ResponseEntity.ok(expenseClaims);
     }
-//    @GetMapping("/get/{id}")
-//    public List<?>getExpenseClaimsPerEmployeePerType(@PathVariable Integer id){
-//        return expenseClaimEntryService.getExpenseClaimsPerEmployeePerType(id);
-//    }
 
     @PatchMapping("/{id}")
     public ApiResponse updateExpenseClaimEntry(@PathVariable Integer id, @RequestBody Map<String, Object> updateFields) {
@@ -83,3 +77,4 @@ public class ExpenseClaimEntryController {
         }
     }
 }
+

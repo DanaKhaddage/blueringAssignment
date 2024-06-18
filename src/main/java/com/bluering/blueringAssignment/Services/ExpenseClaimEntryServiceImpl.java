@@ -1,18 +1,18 @@
 package com.bluering.blueringAssignment.Services;
 
-import com.bluering.blueringAssignment.DTO.DepartmentDTO;
 import com.bluering.blueringAssignment.DTO.EmployeeDTO;
 import com.bluering.blueringAssignment.DTO.ExpenseclaimentryDTO;
 import com.bluering.blueringAssignment.DTO.ExpensetypeDTO;
-import com.bluering.blueringAssignment.Entities.DepartmentEntity;
 import com.bluering.blueringAssignment.Entities.EmployeeEntity;
+import com.bluering.blueringAssignment.Entities.ExpenseclaimEntity;
 import com.bluering.blueringAssignment.Entities.ExpenseclaimentryEntity;
-import com.bluering.blueringAssignment.Mappers.*;
-import com.bluering.blueringAssignment.Repositories.DepartmentRepository;
+import com.bluering.blueringAssignment.Mappers.EmployeeMapper;
+import com.bluering.blueringAssignment.Mappers.ExpenseClaimEntryMapper;
+import com.bluering.blueringAssignment.Mappers.ExpenseTypeMapper;
 import com.bluering.blueringAssignment.Repositories.EmployeeRepository;
 import com.bluering.blueringAssignment.Repositories.ExpenseClaimEntryRepository;
+import com.bluering.blueringAssignment.Repositories.ExpenseClaimRepository;
 import com.bluering.blueringAssignment.Repositories.ExpenseTypeRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +31,8 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService {
     @Autowired
     private ExpenseClaimEntryRepository expenseClaimEntryRepository;
     @Autowired
+    private ExpenseClaimRepository expenseClaimRepository;
+    @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
     private EmployeeMapper employeeMapper;
@@ -39,17 +41,35 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService {
     @Autowired
     private ExpenseTypeRepository expenseTypeRepository;
 
-    public void createExpenseClaimEntry(Map<String,Object> expenseClaimEntryDTO){
-        ExpenseclaimentryEntity expenseclaimentryEntity=new ExpenseclaimentryEntity();
-        generalService.updateEntity(expenseClaimEntryDTO,expenseclaimentryEntity,ExpenseclaimentryEntity.class);
+    private void updateExpenseClaimTotal(Integer expenseClaimId) {
+        ExpenseclaimEntity expenseclaimEntity = expenseClaimRepository.findById(expenseClaimId)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense claim not found with id: " + expenseClaimId));
+
+        double totalAmount = expenseClaimEntryRepository.findAllByExpenseClaim(expenseClaimId).stream()
+                .mapToDouble(ExpenseclaimentryEntity::getTotal)
+                .sum();
+
+        expenseclaimEntity.setTotal(totalAmount);
+        expenseClaimRepository.save(expenseclaimEntity);
+    }
+
+    public void createExpenseClaimEntry(Map<String, Object> expenseClaimEntryDTO) {
+        ExpenseclaimentryEntity expenseclaimentryEntity = new ExpenseclaimentryEntity();
+        generalService.updateEntity(expenseClaimEntryDTO, expenseclaimentryEntity, ExpenseclaimentryEntity.class);
         expenseClaimEntryRepository.saveAndFlush(expenseclaimentryEntity);
+
+        updateExpenseClaimTotal(expenseclaimentryEntity.getExpenseClaim());
     }
 
-    public void deleteExpenseClaimEntry(Integer id){
+    public void deleteExpenseClaimEntry(Integer id) {
+        ExpenseclaimentryEntity entry = expenseClaimEntryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense Claim Entry not found with id: " + id));
         expenseClaimEntryRepository.deleteById(id);
+
+        updateExpenseClaimTotal(entry.getExpenseClaim());
     }
 
-    public List<ExpenseclaimentryDTO> getExpenseClaimEntries(){
+    public List<ExpenseclaimentryDTO> getExpenseClaimEntries() {
         return expenseClaimEntryRepository.findAll()
                 .stream()
                 .map(expenseClaimEntryMapper::ExpenseClaimEntryEntityToExpenseClaimEntryDTO)
@@ -78,9 +98,13 @@ public class ExpenseClaimEntryServiceImpl implements ExpenseClaimEntryService {
         return employeeDTOs;
     }
 
-    public void updateExpenseClaimEntry(Integer id,Map<String,Object> expenseClaimEntryDTO){
-        ExpenseclaimentryEntity expenseclaimentryEntity=expenseClaimEntryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Expense Claim Entry not found with number: " + id));;
-        generalService.updateEntity(expenseClaimEntryDTO,expenseclaimentryEntity,ExpenseclaimentryEntity.class);
+    public void updateExpenseClaimEntry(Integer id, Map<String, Object> expenseClaimEntryDTO) {
+        ExpenseclaimentryEntity expenseclaimentryEntity = expenseClaimEntryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense Claim Entry not found with id: " + id));
+        generalService.updateEntity(expenseClaimEntryDTO, expenseclaimentryEntity, ExpenseclaimentryEntity.class);
         expenseClaimEntryRepository.saveAndFlush(expenseclaimentryEntity);
+
+        updateExpenseClaimTotal(expenseclaimentryEntity.getExpenseClaim());
     }
 }
+

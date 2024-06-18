@@ -127,39 +127,4 @@ public class LeaveController {
                 response
         );
     }
-//    @PostMapping("/paginatedLeaves")
-//    public ApiResponse getLeaves(@RequestBody LeaveRequestDTO leaveRequest) {
-//        PaginationRequest response = leaveService.getLeavesByTypeAndEmployee(
-//                leaveRequest.getLeaveType(),
-//                leaveRequest.getEmployeeId(),
-//                leaveRequest.getPage(),
-//                leaveRequest.getSize()
-//        );
-//
-//        // Fetch employee name and leave type name for each leave
-//        List<LeaveeDTO> leaveDTOs = response.getItems();
-//        for (LeaveeDTO leaveDTO : leaveDTOs) {
-//            // Fetch and set employee name
-//            if (leaveDTO.getEmployeeId() != null) {
-//                String employeeName = employeeRepository.findById(leaveDTO.getEmployeeId())
-//                        .map(EmployeeEntity::getName)
-//                        .orElse("");
-//                leaveDTO.setEmployeeName(employeeName);
-//            }
-//
-//            // Fetch and set leave type name
-//            if (leaveDTO.getLeaveType() != null) {
-//                String leaveTypeName = leaveTypeRepository.findById(leaveDTO.getLeaveType())
-//                        .map(LeavetypeEntity::getName)
-//                        .orElse("");
-//                leaveDTO.setLeaveTypeName(leaveTypeName);
-//            }
-//        }
-//
-//        return new ApiResponse(
-//                true,
-//                "Leaves fetched successfully",
-//                response
-//        );
-//    }
 }
